@@ -74,7 +74,7 @@ export default function Inventory() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Inventory Management</h1>
-                    <p className="text-[#6C757D]">Monitor and manage your pharmacy stock levels</p>
+                    <p className="text-[#6C757D] font-secondary">Monitor and manage your pharmacy stock levels</p>
                 </div>
                 <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all">
                     <Plus className="w-5 h-5" />
@@ -127,7 +127,7 @@ export default function Inventory() {
                                         <p className="font-semibold text-[#1A1A1A] text-sm">{medicine.name}</p>
                                     </td>
                                     <td className="py-4 px-4">
-                                        <span className="text-sm text-[#6C757D]">{medicine.category}</span>
+                                        <span className="text-sm text-[#6C757D] font-secondary">{medicine.category}</span>
                                     </td>
                                     <td className="py-4 px-4">
                                         <div>
@@ -141,10 +141,10 @@ export default function Inventory() {
                                         </div>
                                     </td>
                                     <td className="py-4 px-4">
-                                        <span className="text-sm text-[#6C757D]">{medicine.expiry}</span>
+                                        <span className="text-sm text-[#6C757D] font-secondary">{medicine.expiry}</span>
                                     </td>
                                     <td className="py-4 px-4">
-                                        <span className="text-sm text-[#6C757D]">{medicine.supplier}</span>
+                                        <span className="text-sm text-[#6C757D] font-secondary">{medicine.supplier}</span>
                                     </td>
                                     <td className="py-4 px-4">
                                         <span className="text-sm font-medium text-[#1A1A1A]">{medicine.consumption}</span>

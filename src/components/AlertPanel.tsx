@@ -58,8 +58,8 @@ export default function AlertPanel() {
                                 <Icon className={`w-5 h-5 mt-0.5 ${iconStyles[alert.type as keyof typeof iconStyles]}`} />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-[#1A1A1A] mb-1">{alert.title}</p>
-                                    <p className="text-xs text-[#6C757D] mb-2">{alert.message}</p>
-                                    <p className="text-xs text-[#6C757D]">{alert.time}</p>
+                                    <p className="text-xs text-[#6C757D] mb-2 font-secondary">{alert.message}</p>
+                                    <p className="text-xs text-[#6C757D] font-secondary">{alert.time}</p>
                                 </div>
                             </div>
                         </div>

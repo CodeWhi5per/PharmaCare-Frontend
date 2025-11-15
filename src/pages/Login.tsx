@@ -57,26 +57,26 @@ export default function Login({ onLogin }: LoginProps) {
                         </div>
                         <div>
                             <h1 className="text-4xl font-bold">PharmaCare</h1>
-                            <p className="text-white/80 text-sm">Inventory Management System</p>
+                            <p className="text-white/80 text-sm font-secondary">Inventory Management System</p>
                         </div>
                     </div>
                     <h2 className="text-3xl font-semibold mb-4">Smart Pharmacy Management</h2>
-                    <p className="text-white/90 text-lg leading-relaxed mb-8">
+                    <p className="text-white/90 text-lg leading-relaxed mb-8 font-secondary">
                         Automated inventory tracking, predictive reordering, and real-time analytics
                         to keep your pharmacy running smoothly.
                     </p>
                     <div className="space-y-4">
                         <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
                             <div className="w-2 h-2 rounded-full bg-[#21D6C3]"></div>
-                            <p className="text-sm">Real-time stock monitoring</p>
+                            <p className="text-sm font-secondary">Real-time stock monitoring</p>
                         </div>
                         <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
                             <div className="w-2 h-2 rounded-full bg-[#21D6C3]"></div>
-                            <p className="text-sm">Automated reorder predictions</p>
+                            <p className="text-sm font-secondary">Automated reorder predictions</p>
                         </div>
                         <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-4">
                             <div className="w-2 h-2 rounded-full bg-[#21D6C3]"></div>
-                            <p className="text-sm">Supplier integration & tracking</p>
+                            <p className="text-sm font-secondary">Supplier integration & tracking</p>
                         </div>
                     </div>
                 </div>
@@ -91,8 +91,8 @@ export default function Login({ onLogin }: LoginProps) {
                         {/* Toggle header text */}
                         {!showSignUpForm ? (
                             <>
-                                <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">Welcome Back</h2>
-                                <p className="text-[#6C757D] mb-8">Sign in to access your pharmacy dashboard</p>
+                                <h2 className="text-2xl font-semibold bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] bg-clip-text text-transparent mb-2">Welcome Back</h2>
+                                <p className="text-[#6C757D] mb-8 font-secondary">Sign in to access your pharmacy dashboard</p>
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>
                                         <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Email Address</label>
@@ -140,8 +140,8 @@ export default function Login({ onLogin }: LoginProps) {
                             </>
                         ) : (
                             <>
-                                <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">Create Account</h2>
-                                <p className="text-[#6C757D] mb-8">Sign up to get started with PharmaCare</p>
+                                <h2 className="text-2xl font-semibold bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] bg-clip-text text-transparent mb-2">Create Account</h2>
+                                <p className="text-[#6C757D] mb-8 font-secondary">Sign up to get started with PharmaCare</p>
                                 <form onSubmit={handleSignUpSubmit} className="space-y-6">
                                     <div>
                                         <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Full Name</label>
@@ -210,7 +210,7 @@ export default function Login({ onLogin }: LoginProps) {
                             </>
                         )}
                     </div>
-                    <p className="text-center text-xs text-[#6C757D] mt-6">Secure healthcare data management • HIPAA Compliant</p>
+                    <p className="text-center text-xs text-[#6C757D] mt-6 font-secondary">Secure healthcare data management • HIPAA Compliant</p>
                 </div>
             </div>
 
@@ -223,13 +223,13 @@ export default function Login({ onLogin }: LoginProps) {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold text-[#1A1A1A]">PharmaCare</h1>
-                            <p className="text-[#6C757D] text-sm">Inventory System</p>
+                            <p className="text-[#6C757D] text-sm font-secondary">Inventory System</p>
                         </div>
                     </div>
                     {!showSignUpForm ? (
                         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-                            <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">Welcome Back</h2>
-                            <p className="text-[#6C757D] mb-8">Sign in to access your pharmacy dashboard</p>
+                            <h2 className="text-2xl font-semibold bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] bg-clip-text text-transparent mb-2">Welcome Back</h2>
+                            <p className="text-[#6C757D] mb-8 font-secondary">Sign in to access your pharmacy dashboard</p>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Email Address</label>
@@ -274,8 +274,8 @@ export default function Login({ onLogin }: LoginProps) {
                         </div>
                     ) : (
                         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-                            <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">Create Account</h2>
-                            <p className="text-[#6C757D] mb-8">Sign up to get started with PharmaCare</p>
+                            <h2 className="text-2xl font-semibold bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] bg-clip-text text-transparent mb-2">Create Account</h2>
+                            <p className="text-[#6C757D] mb-8 font-secondary">Sign up to get started with PharmaCare</p>
                             <form onSubmit={handleSignUpSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-medium text-[#1A1A1A] mb-2">Full Name</label>
@@ -340,7 +340,7 @@ export default function Login({ onLogin }: LoginProps) {
                             </div>
                         </div>
                     )}
-                    <p className="text-center text-xs text-[#6C757D] mt-6">Secure healthcare data management • HIPAA Compliant</p>
+                    <p className="text-center text-xs text-[#6C757D] mt-6 font-secondary">Secure healthcare data management • HIPAA Compliant</p>
                 </div>
             </div>
         </div>

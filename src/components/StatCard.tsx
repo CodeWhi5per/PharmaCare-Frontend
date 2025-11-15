@@ -52,7 +52,7 @@ export default function StatCard({ title, value, change, changeType, icon: Icon,
           </span>
                 </div>
             </div>
-            <p className="text-[#6C757D] text-sm mb-1">{title}</p>
+            <p className="text-[#6C757D] text-sm mb-1 font-secondary">{title}</p>
             <p className="text-3xl font-bold text-[#1A1A1A]">{value}</p>
         </div>
     );

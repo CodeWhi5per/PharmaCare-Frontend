@@ -27,7 +27,7 @@ export default function Analytics() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Predictive Analytics & Reports</h1>
-                    <p className="text-[#6C757D]">AI-powered insights and demand forecasting</p>
+                    <p className="text-[#6C757D] font-secondary">AI-powered insights and demand forecasting</p>
                 </div>
                 <div className="flex gap-3">
                     <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl font-medium text-[#1A1A1A] hover:border-[#2EBE76] transition-all">
@@ -46,7 +46,7 @@ export default function Analytics() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-lg font-semibold text-[#1A1A1A] mb-1">Consumption Trends</h2>
-                            <p className="text-sm text-[#6C757D]">Top 5 most dispensed medicines</p>
+                            <p className="text-sm text-[#6C757D] font-secondary">Top 5 most dispensed medicines</p>
                         </div>
                         <TrendingUp className="w-5 h-5 text-[#2EBE76]" />
                     </div>

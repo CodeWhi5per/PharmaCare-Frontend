@@ -24,7 +24,7 @@ export default function Header() {
                     <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                         <div className="text-right">
                             <p className="text-sm font-semibold text-[#1A1A1A]">Dr. Sarah Johnson</p>
-                            <p className="text-xs text-[#6C757D]">Pharmacy Manager</p>
+                            <p className="text-xs text-[#6C757D] font-secondary">Pharmacy Manager</p>
                         </div>
                         <div className="w-10 h-10 bg-gradient-to-br from-[#2EBE76] to-[#0BAF8C] rounded-xl flex items-center justify-center">
                             <User className="w-5 h-5 text-white" />

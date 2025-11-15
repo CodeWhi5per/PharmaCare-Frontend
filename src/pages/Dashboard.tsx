@@ -11,7 +11,7 @@ export default function Dashboard() {
         <div className="p-8 space-y-6">
             <div>
                 <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Dashboard</h1>
-                <p className="text-[#6C757D]">Welcome back! Here's what's happening with your pharmacy today.</p>
+                <p className="text-[#6C757D] font-secondary">Welcome back! Here's what's happening with your pharmacy today.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -98,7 +98,7 @@ export default function Alerts() {
         <div className="p-8 space-y-6">
             <div>
                 <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Smart Notifications & Alerts</h1>
-                <p className="text-[#6C757D]">Real-time monitoring and intelligent alerts for your pharmacy</p>
+                <p className="text-[#6C757D] font-secondary">Real-time monitoring and intelligent alerts for your pharmacy</p>
             </div>
 
             <div className="flex gap-4">
@@ -137,7 +137,7 @@ export default function Alerts() {
                       <span className={`px-3 py-1 rounded-lg text-xs font-semibold text-white ${styles.badge}`}>
                         {alert.category}
                       </span>
-                                            <span className="text-xs text-[#6C757D]">{alert.time}</span>
+                                            <span className="text-xs text-[#6C757D] font-secondary">{alert.time}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <button className="p-2 hover:bg-[#E8F9F5] rounded-lg transition-colors">
@@ -150,16 +150,16 @@ export default function Alerts() {
                                     </div>
 
                                     <h3 className="text-lg font-semibold text-[#1A1A1A] mb-2">{alert.title}</h3>
-                                    <p className="text-sm text-[#6C757D] mb-4">{alert.message}</p>
+                                    <p className="text-sm text-[#6C757D] mb-4 font-secondary">{alert.message}</p>
 
                                     {alert.currentStock && (
                                         <div className="flex items-center gap-6 p-4 bg-[#F7FDFC] rounded-xl">
                                             <div>
-                                                <p className="text-xs text-[#6C757D] mb-1">Current Stock</p>
+                                                <p className="text-xs text-[#6C757D] mb-1 font-secondary">Current Stock</p>
                                                 <p className="text-lg font-bold text-[#1A1A1A]">{alert.currentStock}</p>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-[#6C757D] mb-1">Minimum Required</p>
+                                                <p className="text-xs text-[#6C757D] mb-1 font-secondary">Minimum Required</p>
                                                 <p className="text-lg font-bold text-[#1A1A1A]">{alert.minStock}</p>
                                             </div>
                                             <div className="flex-1">

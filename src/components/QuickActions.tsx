@@ -22,7 +22,7 @@ export default function QuickActions() {
                             <div className={`bg-gradient-to-br ${action.color} p-3 rounded-xl group-hover:scale-110 transition-transform`}>
                                 <Icon className="w-5 h-5 text-white" />
                             </div>
-                            <span className="text-xs font-medium text-[#1A1A1A] text-center">{action.label}</span>
+                            <span className="text-xs font-medium text-[#1A1A1A] text-center font-secondary">{action.label}</span>
                         </button>
                     );
                 })}

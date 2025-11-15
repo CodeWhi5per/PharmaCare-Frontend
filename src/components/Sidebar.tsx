@@ -32,7 +32,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                     </div>
                     <div>
                         <h1 className="text-lg font-bold text-[#1A1A1A]">PharmaCare</h1>
-                        <p className="text-xs text-[#6C757D]">Inventory System</p>
+                        <p className="text-xs text-[#6C757D] font-secondary">Inventory System</p>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
             <div className="p-4 border-t border-gray-100">
                 <div className="bg-gradient-to-br from-[#E8F9F5] to-[#F7FDFC] rounded-xl p-4 border border-[#2EBE76]/10">
                     <p className="text-xs font-semibold text-[#2EBE76] mb-1">Need Help?</p>
-                    <p className="text-xs text-[#6C757D] mb-3">Contact support team</p>
+                    <p className="text-xs text-[#6C757D] mb-3 font-secondary">Contact support team</p>
                     <button className="w-full bg-white text-[#2EBE76] text-xs font-medium py-2 rounded-lg hover:shadow-sm transition-all">
                         Get Support
                     </button>

@@ -51,8 +51,8 @@ export default function RecentActivity() {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold text-[#1A1A1A] mb-1">{activity.title}</p>
-                                <p className="text-sm text-[#6C757D] mb-1">{activity.description}</p>
-                                <p className="text-xs text-[#6C757D]">{activity.time}</p>
+                                <p className="text-sm text-[#6C757D] mb-1 font-secondary">{activity.description}</p>
+                                <p className="text-xs text-[#6C757D] font-secondary">{activity.time}</p>
                             </div>
                         </div>
                     );
