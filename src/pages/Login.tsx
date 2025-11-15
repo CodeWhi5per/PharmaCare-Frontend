@@ -1,22 +1,34 @@
 import { useState } from 'react';
-import { Pill, Lock, Mail } from 'lucide-react';
+import { Pill, Lock, Mail, User } from 'lucide-react';
 
 interface LoginProps {
     onLogin: () => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
+    const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onLogin();
     };
 
+    const handleSignUpSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Handle sign-up logic here
+        onLogin();
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#F7FDFC] via-white to-[#E8F9F5] flex">
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2EBE76] to-[#0BAF8C] items-center justify-center p-12 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-[#F7FDFC] via-white to-[#E8F9F5] flex overflow-hidden relative">
+            {/* Green Panel - Slides left/right */}
+            <div className={`hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2EBE76] to-[#0BAF8C] items-center justify-center p-12 relative overflow-hidden transition-transform duration-500 ease-in-out ${
+                isSignUp ? 'translate-x-full' : 'translate-x-0'
+            }`}>
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute top-20 left-20 w-64 h-64 bg-white rounded-full blur-3xl"></div>
                     <div className="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -56,7 +68,10 @@ export default function Login({ onLogin }: LoginProps) {
                 </div>
             </div>
 
-            <div className="flex-1 flex items-center justify-center p-8">
+            {/* Sign In Form - Slides right when sign-up is active */}
+            <div className={`flex-1 flex items-center justify-center p-8 transition-transform duration-500 ease-in-out ${
+                isSignUp ? 'translate-x-full' : 'translate-x-0'
+            }`}>
                 <div className="w-full max-w-md">
                     <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
                         <div className="bg-[#2EBE76] p-3 rounded-xl">
@@ -128,8 +143,118 @@ export default function Login({ onLogin }: LoginProps) {
                         <div className="mt-6 text-center">
                             <p className="text-sm text-[#6C757D]">
                                 Don't have an account?{' '}
-                                <button className="text-[#2EBE76] hover:text-[#0BAF8C] font-medium transition-colors">
-                                    Contact Admin
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSignUp(true)}
+                                    className="text-[#2EBE76] hover:text-[#0BAF8C] font-medium transition-colors"
+                                >
+                                    Sign Up
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+
+                    <p className="text-center text-xs text-[#6C757D] mt-6">
+                        Secure healthcare data management • HIPAA Compliant
+                    </p>
+                </div>
+            </div>
+
+            {/* Sign Up Form - Slides in from left */}
+            <div className={`hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#F7FDFC] via-white to-[#E8F9F5] items-center justify-center p-8 absolute left-0 top-0 bottom-0 transition-transform duration-500 ease-in-out ${
+                isSignUp ? 'translate-x-0' : '-translate-x-full'
+            }`}>
+                <div className="w-full max-w-md">
+                    <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                        <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">Create Account</h2>
+                        <p className="text-[#6C757D] mb-8">Sign up to get started with PharmaCare</p>
+
+                        <form onSubmit={handleSignUpSubmit} className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
+                                    Full Name
+                                </label>
+                                <div className="relative">
+                                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#6C757D] w-5 h-5" />
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                        placeholder="John Doe"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
+                                    Email Address
+                                </label>
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#6C757D] w-5 h-5" />
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                        placeholder="you@pharmacy.com"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#6C757D] w-5 h-5" />
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                        placeholder="Create a password"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
+                                    Confirm Password
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#6C757D] w-5 h-5" />
+                                    <input
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                        placeholder="Confirm your password"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                            >
+                                Create Account
+                            </button>
+                        </form>
+
+                        <div className="mt-6 text-center">
+                            <p className="text-sm text-[#6C757D]">
+                                Already have an account?{' '}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSignUp(false)}
+                                    className="text-[#2EBE76] hover:text-[#0BAF8C] font-medium transition-colors"
+                                >
+                                    Sign In
                                 </button>
                             </p>
                         </div>
