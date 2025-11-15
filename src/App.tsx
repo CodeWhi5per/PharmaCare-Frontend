@@ -40,7 +40,7 @@ function App() {
         <div className="flex h-screen bg-[#F7FDFC]">
             <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <Header />
+                <Header onLogout={() => setIsLoggedIn(false)} />
                 <main className="flex-1 overflow-y-auto">
                     {renderPage()}
                 </main>
