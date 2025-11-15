@@ -20,12 +20,12 @@ export default function Login({ onLogin }: LoginProps) {
             // When switching to sign-up, wait for panels to finish moving
             timer = setTimeout(() => {
                 setShowSignUpForm(true);
-            }, 700);
+            }, 300);
         } else {
             // When switching to sign-in, wait for panels to finish moving
             timer = setTimeout(() => {
                 setShowSignUpForm(false);
-            }, 700);
+            }, 300);
         }
         return () => clearTimeout(timer);
     }, [isSignUp]);
