@@ -7,13 +7,37 @@ import StockPredictionChart from '../components/StockPredictionChart';
 import QuickActions from '../components/QuickActions';
 import RecentActivity from '../components/RecentActivity';
 import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineModal';
+import GenerateReorderModal, { ReorderData } from '../components/GenerateReorderModal';
+import ExportReportModal, { ExportData } from '../components/ExportReportModal';
 
-export default function Dashboard() {
+interface DashboardProps {
+    onNavigate?: (page: string) => void;
+}
+
+export default function Dashboard({ onNavigate }: DashboardProps) {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
     const handleAddMedicine = (medicineData: MedicineFormData) => {
         console.log('New medicine added:', medicineData);
         // In a real application, this would save to backend/state management
+    };
+
+    const handleGenerateReorder = (reorderData: ReorderData) => {
+        console.log('Reorder generated:', reorderData);
+        // In a real application, this would create purchase orders
+    };
+
+    const handleExportReport = (exportData: ExportData) => {
+        console.log('Export report:', exportData);
+        // In a real application, this would generate and download the report
+    };
+
+    const handleViewSuppliers = () => {
+        if (onNavigate) {
+            onNavigate('suppliers');
+        }
     };
 
     return (
@@ -66,7 +90,12 @@ export default function Dashboard() {
 
                 <div className="space-y-6">
                     <AlertPanel />
-                    <QuickActions onAddMedicine={() => setIsAddModalOpen(true)} />
+                    <QuickActions
+                        onAddMedicine={() => setIsAddModalOpen(true)}
+                        onViewSuppliers={handleViewSuppliers}
+                        onGenerateReorder={() => setIsReorderModalOpen(true)}
+                        onExportReport={() => setIsExportModalOpen(true)}
+                    />
                 </div>
             </div>
 
@@ -76,6 +105,16 @@ export default function Dashboard() {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddMedicine}
+            />
+            <GenerateReorderModal
+                isOpen={isReorderModalOpen}
+                onClose={() => setIsReorderModalOpen(false)}
+                onGenerate={handleGenerateReorder}
+            />
+            <ExportReportModal
+                isOpen={isExportModalOpen}
+                onClose={() => setIsExportModalOpen(false)}
+                onExport={handleExportReport}
             />
         </div>
     );

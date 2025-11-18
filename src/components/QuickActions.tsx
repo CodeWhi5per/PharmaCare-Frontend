@@ -2,14 +2,22 @@ import { Plus, RefreshCw, FileText, Users } from 'lucide-react';
 
 interface QuickActionsProps {
     onAddMedicine?: () => void;
+    onViewSuppliers?: () => void;
+    onGenerateReorder?: () => void;
+    onExportReport?: () => void;
 }
 
-export default function QuickActions({ onAddMedicine }: QuickActionsProps) {
+export default function QuickActions({
+    onAddMedicine,
+    onViewSuppliers,
+    onGenerateReorder,
+    onExportReport
+}: QuickActionsProps) {
     const actions = [
         { icon: Plus, label: 'Add Medicine', color: 'from-[#2EBE76] to-[#0BAF8C]', onClick: onAddMedicine },
-        { icon: Users, label: 'View Suppliers', color: 'from-blue-500 to-blue-600' },
-        { icon: RefreshCw, label: 'Generate Reorder', color: 'from-orange-500 to-orange-600' },
-        { icon: FileText, label: 'Export Report', color: 'from-purple-500 to-purple-600' },
+        { icon: Users, label: 'View Suppliers', color: 'from-blue-500 to-blue-600', onClick: onViewSuppliers },
+        { icon: RefreshCw, label: 'Generate Reorder', color: 'from-orange-500 to-orange-600', onClick: onGenerateReorder },
+        { icon: FileText, label: 'Export Report', color: 'from-purple-500 to-purple-600', onClick: onExportReport },
     ];
 
     return (
