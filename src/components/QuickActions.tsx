@@ -1,8 +1,12 @@
 import { Plus, RefreshCw, FileText, Users } from 'lucide-react';
 
-export default function QuickActions() {
+interface QuickActionsProps {
+    onAddMedicine?: () => void;
+}
+
+export default function QuickActions({ onAddMedicine }: QuickActionsProps) {
     const actions = [
-        { icon: Plus, label: 'Add Medicine', color: 'from-[#2EBE76] to-[#0BAF8C]' },
+        { icon: Plus, label: 'Add Medicine', color: 'from-[#2EBE76] to-[#0BAF8C]', onClick: onAddMedicine },
         { icon: Users, label: 'View Suppliers', color: 'from-blue-500 to-blue-600' },
         { icon: RefreshCw, label: 'Generate Reorder', color: 'from-orange-500 to-orange-600' },
         { icon: FileText, label: 'Export Report', color: 'from-purple-500 to-purple-600' },
@@ -17,6 +21,7 @@ export default function QuickActions() {
                     return (
                         <button
                             key={index}
+                            onClick={action.onClick}
                             className="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-100 hover:shadow-md hover:scale-[1.02] transition-all duration-200 group"
                         >
                             <div className={`bg-gradient-to-br ${action.color} p-3 rounded-xl group-hover:scale-110 transition-transform`}>

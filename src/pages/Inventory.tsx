@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Search, Filter, Download, Plus, Eye } from 'lucide-react';
+import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineModal';
 
 export default function Inventory() {
     const [searchTerm, setSearchTerm] = useState('');
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-    const medicines = [
+    const [medicines, setMedicines] = useState([
         {
             id: 1,
             name: 'Paracetamol 500mg',
@@ -60,7 +62,24 @@ export default function Inventory() {
             consumption: '10/day',
             status: 'healthy',
         },
-    ];
+    ]);
+
+    const handleAddMedicine = (medicineData: MedicineFormData) => {
+        const newMedicine = {
+            id: medicines.length + 1,
+            name: medicineData.name,
+            category: medicineData.category,
+            stock: medicineData.stock,
+            minStock: medicineData.minStock,
+            expiry: medicineData.expiry,
+            supplier: medicineData.supplier,
+            consumption: medicineData.consumption,
+            status: medicineData.stock < medicineData.minStock
+                ? (medicineData.stock < medicineData.minStock * 0.5 ? 'critical' : 'low')
+                : 'healthy',
+        };
+        setMedicines([...medicines, newMedicine]);
+    };
 
     const statusStyles = {
         healthy: { bg: 'bg-green-50', text: 'text-green-600', border: 'border-green-200', label: 'Healthy' },
@@ -76,7 +95,10 @@ export default function Inventory() {
                     <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Inventory Management</h1>
                     <p className="text-[#6C757D] font-secondary">Monitor and manage your pharmacy stock levels</p>
                 </div>
-                <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all">
+                <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all"
+                >
                     <Plus className="w-5 h-5" />
                     Add Medicine
                 </button>
@@ -166,6 +188,12 @@ export default function Inventory() {
                     </table>
                 </div>
             </div>
+
+            <AddMedicineModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAdd={handleAddMedicine}
+            />
         </div>
     );
 }

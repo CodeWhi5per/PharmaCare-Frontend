@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Package, AlertTriangle, Calendar, TrendingUp } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import AlertPanel from '../components/AlertPanel';
@@ -5,8 +6,16 @@ import ConsumptionChart from '../components/ConsumptionChart';
 import StockPredictionChart from '../components/StockPredictionChart';
 import QuickActions from '../components/QuickActions';
 import RecentActivity from '../components/RecentActivity';
+import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineModal';
 
 export default function Dashboard() {
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    const handleAddMedicine = (medicineData: MedicineFormData) => {
+        console.log('New medicine added:', medicineData);
+        // In a real application, this would save to backend/state management
+    };
+
     return (
         <div className="p-8 space-y-6">
             <div>
@@ -57,11 +66,17 @@ export default function Dashboard() {
 
                 <div className="space-y-6">
                     <AlertPanel />
-                    <QuickActions />
+                    <QuickActions onAddMedicine={() => setIsAddModalOpen(true)} />
                 </div>
             </div>
 
             <RecentActivity />
+
+            <AddMedicineModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAdd={handleAddMedicine}
+            />
         </div>
     );
 }
