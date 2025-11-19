@@ -88,6 +88,16 @@ export default function Inventory() {
         expiring: { bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-yellow-200', label: 'Expiring Soon' },
     };
 
+    // Filter medicines based on search term
+    const filteredMedicines = medicines.filter((medicine) => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            medicine.name.toLowerCase().includes(searchLower) ||
+            medicine.category.toLowerCase().includes(searchLower) ||
+            medicine.supplier.toLowerCase().includes(searchLower)
+        );
+    });
+
     return (
         <div className="p-8 space-y-6">
             <div className="flex items-center justify-between">
@@ -115,6 +125,13 @@ export default function Inventory() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
                         />
+                        {searchTerm && (
+                            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                                <span className="text-sm text-[#6C757D] font-secondary">
+                                    {filteredMedicines.length} result{filteredMedicines.length !== 1 ? 's' : ''}
+                                </span>
+                            </div>
+                        )}
                     </div>
                     <button className="flex items-center gap-2 px-6 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl font-medium text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76] transition-all">
                         <Filter className="w-5 h-5" />
@@ -141,49 +158,63 @@ export default function Inventory() {
                         </tr>
                         </thead>
                         <tbody>
-                        {medicines.map((medicine) => {
-                            const status = statusStyles[medicine.status as keyof typeof statusStyles];
-                            return (
-                                <tr key={medicine.id} className="border-b border-gray-50 hover:bg-[#F7FDFC] transition-colors">
-                                    <td className="py-4 px-4">
-                                        <p className="font-semibold text-[#1A1A1A] text-sm">{medicine.name}</p>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <span className="text-sm text-[#6C757D] font-secondary">{medicine.category}</span>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <div>
-                                            <p className="text-sm font-semibold text-[#1A1A1A] mb-1">{medicine.stock} units</p>
-                                            <div className="w-24 bg-gray-100 rounded-full h-1.5">
-                                                <div
-                                                    className={`h-full rounded-full ${medicine.stock < medicine.minStock ? 'bg-red-500' : 'bg-[#2EBE76]'}`}
-                                                    style={{ width: `${Math.min((medicine.stock / medicine.minStock) * 100, 100)}%` }}
-                                                ></div>
+                        {filteredMedicines.length > 0 ? (
+                            filteredMedicines.map((medicine) => {
+                                const status = statusStyles[medicine.status as keyof typeof statusStyles];
+                                return (
+                                    <tr key={medicine.id} className="border-b border-gray-50 hover:bg-[#F7FDFC] transition-colors">
+                                        <td className="py-4 px-4">
+                                            <p className="font-semibold text-[#1A1A1A] text-sm">{medicine.name}</p>
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <span className="text-sm text-[#6C757D] font-secondary">{medicine.category}</span>
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <div>
+                                                <p className="text-sm font-semibold text-[#1A1A1A] mb-1">{medicine.stock} units</p>
+                                                <div className="w-24 bg-gray-100 rounded-full h-1.5">
+                                                    <div
+                                                        className={`h-full rounded-full ${medicine.stock < medicine.minStock ? 'bg-red-500' : 'bg-[#2EBE76]'}`}
+                                                        style={{ width: `${Math.min((medicine.stock / medicine.minStock) * 100, 100)}%` }}
+                                                    ></div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <span className="text-sm text-[#6C757D] font-secondary">{medicine.expiry}</span>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <span className="text-sm text-[#6C757D] font-secondary">{medicine.supplier}</span>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <span className="text-sm font-medium text-[#1A1A1A]">{medicine.consumption}</span>
-                                    </td>
-                                    <td className="py-4 px-4">
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <span className="text-sm text-[#6C757D] font-secondary">{medicine.expiry}</span>
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <span className="text-sm text-[#6C757D] font-secondary">{medicine.supplier}</span>
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <span className="text-sm font-medium text-[#1A1A1A]">{medicine.consumption}</span>
+                                        </td>
+                                        <td className="py-4 px-4">
                       <span className={`px-3 py-1 rounded-lg text-xs font-semibold border ${status.bg} ${status.text} ${status.border}`}>
                         {status.label}
                       </span>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <button className="p-2 hover:bg-[#E8F9F5] rounded-lg transition-colors">
-                                            <Eye className="w-4 h-4 text-[#6C757D]" />
-                                        </button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                                        </td>
+                                        <td className="py-4 px-4">
+                                            <button className="p-2 hover:bg-[#E8F9F5] rounded-lg transition-colors">
+                                                <Eye className="w-4 h-4 text-[#6C757D]" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan={8} className="py-12 text-center">
+                                    <div className="flex flex-col items-center gap-3">
+                                        <Search className="w-12 h-12 text-gray-300" />
+                                        <p className="text-lg font-semibold text-[#1A1A1A]">No medicines found</p>
+                                        <p className="text-sm text-[#6C757D]">
+                                            Try adjusting your search to find what you're looking for
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
                         </tbody>
                     </table>
                 </div>
