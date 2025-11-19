@@ -1,6 +1,9 @@
 import { AlertTriangle, Clock, Package, CheckCircle, X } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Alerts() {
+    const [activeFilter, setActiveFilter] = useState('All');
+
     const alerts = [
         {
             id: 1,
@@ -94,6 +97,16 @@ export default function Alerts() {
         },
     };
 
+    // Filter alerts based on active filter
+    const filteredAlerts = alerts.filter((alert) => {
+        if (activeFilter === 'All') return true;
+        if (activeFilter === 'Critical') return alert.type === 'critical';
+        if (activeFilter === 'Low Stock') return alert.category === 'Low Stock';
+        if (activeFilter === 'Expiring Soon') return alert.category === 'Expiring Soon';
+        if (activeFilter === 'Auto-Reorder') return alert.category === 'Auto-Reorder';
+        return true;
+    });
+
     return (
         <div className="p-8 space-y-6">
             <div>
@@ -105,8 +118,9 @@ export default function Alerts() {
                 {['All', 'Critical', 'Low Stock', 'Expiring Soon', 'Auto-Reorder'].map((filter) => (
                     <button
                         key={filter}
+                        onClick={() => setActiveFilter(filter)}
                         className={`px-4 py-2 rounded-xl font-medium transition-all ${
-                            filter === 'All'
+                            filter === activeFilter
                                 ? 'bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white shadow-md'
                                 : 'bg-white border border-gray-200 text-[#6C757D] hover:border-[#2EBE76] hover:text-[#2EBE76]'
                         }`}
@@ -117,7 +131,14 @@ export default function Alerts() {
             </div>
 
             <div className="space-y-4">
-                {alerts.map((alert) => {
+                {filteredAlerts.length === 0 ? (
+                    <div className="bg-white rounded-2xl p-12 text-center">
+                        <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-[#1A1A1A] mb-2">No alerts found</h3>
+                        <p className="text-[#6C757D] font-secondary">There are no {activeFilter.toLowerCase()} alerts at the moment.</p>
+                    </div>
+                ) : (
+                    filteredAlerts.map((alert) => {
                     const styles = typeStyles[alert.type as keyof typeof typeStyles];
                     const Icon = alert.icon;
 
@@ -187,7 +208,8 @@ export default function Alerts() {
                             </div>
                         </div>
                     );
-                })}
+                })
+                )}
             </div>
         </div>
     );
