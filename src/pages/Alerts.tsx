@@ -97,7 +97,6 @@ export default function Alerts() {
         },
     };
 
-    // Filter alerts based on active filter
     const filteredAlerts = alerts.filter((alert) => {
         if (activeFilter === 'All') return true;
         if (activeFilter === 'Critical') return alert.type === 'critical';

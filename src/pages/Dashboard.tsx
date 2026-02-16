@@ -21,17 +21,14 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
     const handleAddMedicine = (medicineData: MedicineFormData) => {
         console.log('New medicine added:', medicineData);
-        // In a real application, this would save to backend/state management
     };
 
     const handleGenerateReorder = (reorderData: ReorderData) => {
         console.log('Reorder generated:', reorderData);
-        // In a real application, this would create purchase orders
     };
 
     const handleExportReport = (exportData: ExportData) => {
         console.log('Export report:', exportData);
-        // In a real application, this would generate and download the report
     };
 
     const handleViewSuppliers = () => {

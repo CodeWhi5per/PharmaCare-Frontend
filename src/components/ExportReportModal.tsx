@@ -43,7 +43,6 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
             dateRange,
         });
 
-        // Simulate download
         const fileName = `${reportType}-report-${Date.now()}.${format === 'pdf' ? 'pdf' : 'xlsx'}`;
         console.log(`Exporting ${fileName}`);
 
@@ -55,7 +54,6 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
-                {/* Header */}
                 <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-5 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="bg-white bg-opacity-20 p-2 rounded-xl">
@@ -76,9 +74,8 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                     </button>
                 </div>
 
-                {/* Content */}
                 <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-                    {/* Report Type Selection */}
+
                     <div className="mb-6">
                         <label className="block text-sm font-semibold text-[#1A1A1A] mb-3">
                             Select Report Type <span className="text-red-500">*</span>
@@ -102,7 +99,6 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                         </div>
                     </div>
 
-                    {/* Format Selection */}
                     <div className="mb-6">
                         <label className="block text-sm font-semibold text-[#1A1A1A] mb-3">
                             Export Format <span className="text-red-500">*</span>
@@ -153,7 +149,6 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                         </div>
                     </div>
 
-                    {/* Date Range Selection */}
                     <div className="mb-6">
                         <label className="block text-sm font-semibold text-[#1A1A1A] mb-3">
                             Date Range <span className="text-red-500">*</span>
@@ -171,7 +166,6 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                         </select>
                     </div>
 
-                    {/* Summary Box */}
                     <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
                         <h3 className="font-semibold text-[#1A1A1A] mb-3">Export Summary</h3>
                         <div className="space-y-2">
@@ -197,7 +191,6 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                     </div>
                 </div>
 
-                {/* Footer */}
                 <div className="flex gap-4 px-6 py-4 border-t border-gray-100 bg-gray-50">
                     <button
                         type="button"

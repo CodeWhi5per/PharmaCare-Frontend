@@ -98,10 +98,9 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                     </button>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Medicine Name */}
+
                         <div className="md:col-span-2">
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Medicine Name <span className="text-red-500">*</span>
@@ -116,7 +115,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             />
                         </div>
 
-                        {/* Category */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Category <span className="text-red-500">*</span>
@@ -136,7 +134,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             </select>
                         </div>
 
-                        {/* Supplier */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Supplier <span className="text-red-500">*</span>
@@ -156,7 +153,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             </select>
                         </div>
 
-                        {/* Stock Quantity */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Stock Quantity <span className="text-red-500">*</span>
@@ -172,7 +168,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             />
                         </div>
 
-                        {/* Minimum Stock */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Minimum Stock Level <span className="text-red-500">*</span>
@@ -188,7 +183,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             />
                         </div>
 
-                        {/* Expiry Date */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Expiry Date <span className="text-red-500">*</span>
@@ -205,7 +199,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             </div>
                         </div>
 
-                        {/* Batch Number */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Batch Number <span className="text-red-500">*</span>
@@ -220,7 +213,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             />
                         </div>
 
-                        {/* Consumption Rate */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Daily Consumption Rate <span className="text-red-500">*</span>
@@ -235,7 +227,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                             />
                         </div>
 
-                        {/* Unit Price */}
                         <div>
                             <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
                                 Unit Price ($) <span className="text-red-500">*</span>
@@ -253,7 +244,6 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex gap-4 mt-8 pt-6 border-t border-gray-100">
                         <button
                             type="button"

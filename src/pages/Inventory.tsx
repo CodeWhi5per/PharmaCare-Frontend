@@ -88,7 +88,6 @@ export default function Inventory() {
         expiring: { bg: 'bg-yellow-50', text: 'text-yellow-600', border: 'border-yellow-200', label: 'Expiring Soon' },
     };
 
-    // Filter medicines based on search term
     const filteredMedicines = medicines.filter((medicine) => {
         const searchLower = searchTerm.toLowerCase();
         return (

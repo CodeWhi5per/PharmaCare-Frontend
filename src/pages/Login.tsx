@@ -13,16 +13,13 @@ export default function Login({ onLogin }: LoginProps) {
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    // Delay form content change until after panel animation (700ms)
     useEffect(() => {
         let timer: NodeJS.Timeout;
         if (isSignUp) {
-            // When switching to sign-up, wait for panels to finish moving
             timer = setTimeout(() => {
                 setShowSignUpForm(true);
             }, 200);
         } else {
-            // When switching to sign-in, wait for panels to finish moving
             timer = setTimeout(() => {
                 setShowSignUpForm(false);
             }, 200);
@@ -82,7 +79,6 @@ export default function Login({ onLogin }: LoginProps) {
                 </div>
             </div>
 
-            {/* Auth panel (white) that swaps position with green panel */}
             <div className={`hidden lg:flex lg:w-1/2 items-center justify-center p-8 transition-all duration-700 ease-in-out absolute top-0 bottom-0 ${
                 isSignUp ? 'left-0' : 'left-1/2'
             } z-10 will-change-[left]`}>
@@ -214,7 +210,6 @@ export default function Login({ onLogin }: LoginProps) {
                 </div>
             </div>
 
-            {/* Mobile view retains previous conditional rendering */}
             <div className="lg:hidden flex items-center justify-center p-8 w-full">
                 <div className="w-full max-w-md">
                     <div className="flex items-center gap-3 mb-8 justify-center">
