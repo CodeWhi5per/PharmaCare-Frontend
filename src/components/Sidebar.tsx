@@ -63,9 +63,12 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                 <div className="bg-gradient-to-br from-[#E8F9F5] to-[#F7FDFC] rounded-xl p-4 border border-[#2EBE76]/10">
                     <p className="text-xs font-semibold text-[#2EBE76] mb-1">Need Help?</p>
                     <p className="text-xs text-[#6C757D] mb-3 font-secondary">Contact support team</p>
-                    <button className="w-full bg-white text-[#2EBE76] text-xs font-medium py-2 rounded-lg hover:shadow-sm transition-all">
+                    <a
+                        href="mailto:pharmacareinventory@gmail.com"
+                        className="block w-full bg-white text-[#2EBE76] text-xs font-medium py-2 rounded-lg hover:shadow-sm transition-all text-center"
+                    >
                         Get Support
-                    </button>
+                    </a>
                 </div>
             </div>
         </aside>
