@@ -2,17 +2,9 @@ import { useState } from 'react';
 import { X, FileText, Download, FileSpreadsheet, File, Loader2 } from 'lucide-react';
 import { inventoryAPI, suppliersAPI, alertsAPI } from '../services/api';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
-// Extend jsPDF type to include autoTable
-declare module 'jspdf' {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    interface jsPDF {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        autoTable: (options: any) => jsPDF;
-    }
-}
 
 interface ExportReportModalProps {
     isOpen: boolean;
@@ -138,9 +130,9 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                 // Add table
                 if (rows.length > 0) {
                     const headers = Object.keys(rows[0]);
-                    const data = rows.map(row => headers.map(h => row[h]));
+                    const data = rows.map(row => headers.map(h => String(row[h] ?? '')));
 
-                    doc.autoTable({
+                    autoTable(doc, {
                         head: [headers],
                         body: data,
                         startY: 40,
@@ -165,15 +157,20 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
                 }
 
                 // Add footer
-                const pageCount = doc.getNumberOfPages();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const pageCount = (doc as any).internal.getNumberOfPages();
                 for (let i = 1; i <= pageCount; i++) {
                     doc.setPage(i);
                     doc.setFontSize(8);
                     doc.setTextColor(150);
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const pageWidth = (doc as any).internal.pageSize.getWidth();
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const pageHeight = (doc as any).internal.pageSize.getHeight();
                     doc.text(
                         `Page ${i} of ${pageCount} - PharmaCare Management System`,
-                        doc.internal.pageSize.getWidth() / 2,
-                        doc.internal.pageSize.getHeight() - 10,
+                        pageWidth / 2,
+                        pageHeight - 10,
                         { align: 'center' }
                     );
                 }
@@ -201,8 +198,9 @@ export default function ExportReportModal({ isOpen, onClose, onExport }: ExportR
             onExport({ reportType, format, dateRange });
             onClose();
         } catch (err) {
-            console.error('Export failed', err);
-            alert('Failed to export report. Please try again.');
+            console.error('Export failed:', err);
+            const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+            alert(`Failed to export report: ${errorMessage}. Please try again.`);
         } finally {
             setExporting(false);
         }
