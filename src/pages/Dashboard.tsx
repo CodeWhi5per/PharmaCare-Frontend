@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Package, AlertTriangle, Calendar, TrendingUp } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import AlertPanel from '../components/AlertPanel';
@@ -9,6 +9,7 @@ import RecentActivity from '../components/RecentActivity';
 import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineModal';
 import GenerateReorderModal, { ReorderData } from '../components/GenerateReorderModal';
 import ExportReportModal, { ExportData } from '../components/ExportReportModal';
+import { dashboardAPI, inventoryAPI } from '../services/api';
 
 interface DashboardProps {
     onNavigate?: (page: string) => void;
@@ -18,9 +19,20 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [stats, setStats] = useState({ totalMedicines: 0, lowStockItems: 0, expiringSoon: 0, autoOrders: 0 });
 
-    const handleAddMedicine = (medicineData: MedicineFormData) => {
-        console.log('New medicine added:', medicineData);
+    useEffect(() => {
+        dashboardAPI.getStats().then((res) => setStats(res.data)).catch(console.error);
+    }, []);
+
+    const handleAddMedicine = async (medicineData: MedicineFormData) => {
+        try {
+            await inventoryAPI.create(medicineData);
+            const res = await dashboardAPI.getStats();
+            setStats(res.data);
+        } catch (err) {
+            console.error('Failed to add medicine', err);
+        }
     };
 
     const handleGenerateReorder = (reorderData: ReorderData) => {
@@ -32,9 +44,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     };
 
     const handleViewSuppliers = () => {
-        if (onNavigate) {
-            onNavigate('suppliers');
-        }
+        if (onNavigate) onNavigate('suppliers');
     };
 
     return (
@@ -45,38 +55,10 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    title="Total Medicines"
-                    value="1,247"
-                    change="+12"
-                    changeType="increase"
-                    icon={Package}
-                    color="blue"
-                />
-                <StatCard
-                    title="Low Stock Items"
-                    value="23"
-                    change="-5"
-                    changeType="decrease"
-                    icon={AlertTriangle}
-                    color="orange"
-                />
-                <StatCard
-                    title="Expiring Soon"
-                    value="8"
-                    change="+3"
-                    changeType="increase"
-                    icon={Calendar}
-                    color="red"
-                />
-                <StatCard
-                    title="Auto Orders"
-                    value="15"
-                    change="+7"
-                    changeType="increase"
-                    icon={TrendingUp}
-                    color="green"
-                />
+                <StatCard title="Total Medicines" value={stats.totalMedicines.toLocaleString()} change="+12" changeType="increase" icon={Package} color="blue" />
+                <StatCard title="Low Stock Items" value={String(stats.lowStockItems)} change="-5" changeType="decrease" icon={AlertTriangle} color="orange" />
+                <StatCard title="Expiring Soon" value={String(stats.expiringSoon)} change="+3" changeType="increase" icon={Calendar} color="red" />
+                <StatCard title="Auto Orders" value={String(stats.autoOrders)} change="+7" changeType="increase" icon={TrendingUp} color="green" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -84,7 +66,6 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                     <ConsumptionChart />
                     <StockPredictionChart />
                 </div>
-
                 <div className="space-y-6">
                     <AlertPanel />
                     <QuickActions
@@ -98,21 +79,9 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
             <RecentActivity />
 
-            <AddMedicineModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                onAdd={handleAddMedicine}
-            />
-            <GenerateReorderModal
-                isOpen={isReorderModalOpen}
-                onClose={() => setIsReorderModalOpen(false)}
-                onGenerate={handleGenerateReorder}
-            />
-            <ExportReportModal
-                isOpen={isExportModalOpen}
-                onClose={() => setIsExportModalOpen(false)}
-                onExport={handleExportReport}
-            />
+            <AddMedicineModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onAdd={handleAddMedicine} />
+            <GenerateReorderModal isOpen={isReorderModalOpen} onClose={() => setIsReorderModalOpen(false)} onGenerate={handleGenerateReorder} />
+            <ExportReportModal isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)} onExport={handleExportReport} />
         </div>
     );
 }

@@ -13,6 +13,10 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentPage, setCurrentPage] = useState('dashboard');
 
+    // Read user from localStorage (set during login/register)
+    const storedUser = localStorage.getItem('pharmacare_user');
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
     if (!isLoggedIn) {
         return <Login onLogin={() => setIsLoggedIn(true)} />;
     }
@@ -40,7 +44,11 @@ function App() {
         <div className="flex h-screen bg-[#F7FDFC]">
             <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <Header onLogout={() => setIsLoggedIn(false)} />
+                <Header
+                    onLogout={() => { localStorage.removeItem('pharmacare_token'); localStorage.removeItem('pharmacare_user'); setIsLoggedIn(false); }}
+                    onNavigate={(page: string) => setCurrentPage(page)}
+                    user={user}
+                />
                 <main className="flex-1 overflow-y-auto">
                     {renderPage()}
                 </main>
