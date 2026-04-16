@@ -62,6 +62,10 @@ export const inventoryAPI = {
         fetch(`${API_BASE}/inventory/${id}`, { method: 'DELETE', headers: headers() }).then(handleResponse),
     reorder: (id: string, quantity: number) =>
         fetch(`${API_BASE}/inventory/${id}/reorder`, { method: 'POST', headers: headers(), body: JSON.stringify({ quantity }) }).then(handleResponse),
+    getLowStock: () =>
+        fetch(`${API_BASE}/inventory/low-stock`, { headers: headers() }).then(handleResponse),
+    bulkReorder: (medicines: Array<{ id: string; quantity: number }>) =>
+        fetch(`${API_BASE}/inventory/bulk-reorder`, { method: 'POST', headers: headers(), body: JSON.stringify({ medicines }) }).then(handleResponse),
 };
 
 // ALERTS

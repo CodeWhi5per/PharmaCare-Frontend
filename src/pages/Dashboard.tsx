@@ -35,8 +35,11 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
         }
     };
 
-    const handleGenerateReorder = (reorderData: ReorderData) => {
+    const handleGenerateReorder = async (reorderData: ReorderData) => {
         console.log('Reorder generated:', reorderData);
+        // Refresh stats after reorder
+        const res = await dashboardAPI.getStats();
+        setStats(res.data);
     };
 
     const handleExportReport = (exportData: ExportData) => {
@@ -67,7 +70,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                     <StockPredictionChart />
                 </div>
                 <div className="space-y-6">
-                    <AlertPanel />
+                    <AlertPanel onViewAll={() => onNavigate && onNavigate('alerts')} />
                     <QuickActions
                         onAddMedicine={() => setIsAddModalOpen(true)}
                         onViewSuppliers={handleViewSuppliers}
