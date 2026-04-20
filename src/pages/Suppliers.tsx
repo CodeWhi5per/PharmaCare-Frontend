@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
-import { Search, Mail, Phone, MapPin, TrendingUp, Package, Plus } from 'lucide-react';
+import { Search, Mail, Phone, MapPin, TrendingUp, Package, Plus, Building2 } from 'lucide-react';
 import { suppliersAPI } from '../services/api';
+import AddSupplierModal, { SupplierFormData } from '../components/AddSupplierModal';
+import ViewSupplierModal from '../components/ViewSupplierModal';
 
 export default function Suppliers() {
     const [search, setSearch] = useState('');
     const [suppliers, setSuppliers] = useState<any[]>([]);
     const [communications, setCommunications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [selectedSupplier, setSelectedSupplier] = useState<any>(null);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
     const fetchSuppliers = async (q = '') => {
         try {
@@ -37,6 +42,54 @@ export default function Suppliers() {
         return () => clearTimeout(t);
     }, [search]);
 
+    const handleAddSupplier = async (data: SupplierFormData) => {
+        try {
+            await suppliersAPI.create(data);
+            fetchSuppliers(search);
+            fetchComms();
+        } catch (err) {
+            console.error('Failed to add supplier', err);
+            throw err;
+        }
+    };
+
+    const handleUpdateSupplier = async (id: string, data: SupplierFormData) => {
+        try {
+            await suppliersAPI.update(id, data);
+            fetchSuppliers(search);
+            fetchComms();
+        } catch (err) {
+            console.error('Failed to update supplier', err);
+            throw err;
+        }
+    };
+
+    const handleDeleteSupplier = async (id: string) => {
+        try {
+            await suppliersAPI.delete(id);
+            fetchSuppliers(search);
+            fetchComms();
+        } catch (err) {
+            console.error('Failed to delete supplier', err);
+            throw err;
+        }
+    };
+
+    const handleViewSupplier = (supplier: any) => {
+        setSelectedSupplier(supplier);
+        setIsViewModalOpen(true);
+    };
+
+    const handleContactSupplier = (supplier: any) => {
+        // Open email client
+        window.location.href = `mailto:${supplier.email}?subject=Inquiry from PharmaCare`;
+    };
+
+    const handleOrderFromSupplier = (supplier: any) => {
+        // Placeholder for order functionality
+        alert(`Order functionality for ${supplier.name} will be implemented soon!`);
+    };
+
     const timeAgo = (date: string) => {
         const diff = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
         if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
@@ -51,7 +104,10 @@ export default function Suppliers() {
                     <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Supplier Integration</h1>
                     <p className="text-[#6C757D]">Manage supplier relationships and track orders</p>
                 </div>
-                <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all">
+                <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all"
+                >
                     <Plus className="w-5 h-5" />
                     Add Supplier
                 </button>
@@ -70,10 +126,37 @@ export default function Suppliers() {
 
             {loading ? (
                 <div className="text-center py-12 text-[#6C757D]">Loading suppliers...</div>
+            ) : suppliers.length === 0 ? (
+                <div className="bg-white rounded-2xl p-12 border border-gray-100 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-20 h-20 bg-gradient-to-br from-[#2EBE76] to-[#0BAF8C] rounded-2xl flex items-center justify-center">
+                            <Building2 className="w-10 h-10 text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-[#1A1A1A] mb-2">No Suppliers Found</h3>
+                            <p className="text-[#6C757D] mb-4">
+                                {search ? 'Try adjusting your search criteria' : 'Get started by adding your first supplier'}
+                            </p>
+                            {!search && (
+                                <button
+                                    onClick={() => setIsAddModalOpen(true)}
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all"
+                                >
+                                    <Plus className="w-5 h-5" />
+                                    Add First Supplier
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     {suppliers.map((supplier) => (
-                        <div key={supplier._id} className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all">
+                        <div
+                            key={supplier._id}
+                            className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer"
+                            onClick={() => handleViewSupplier(supplier)}
+                        >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 bg-gradient-to-br from-[#2EBE76] to-[#0BAF8C] rounded-xl flex items-center justify-center">
@@ -131,9 +214,19 @@ export default function Suppliers() {
                                     <p className="text-xs text-[#6C757D]">Avg. Response</p>
                                     <p className="text-sm font-semibold text-[#1A1A1A]">{supplier.responseTime}</p>
                                 </div>
-                                <div className="flex gap-2">
-                                    <button className="px-4 py-2 bg-[#F7FDFC] text-[#2EBE76] rounded-lg text-sm font-medium hover:bg-[#E8F9F5] transition-all">Contact</button>
-                                    <button className="px-4 py-2 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-lg text-sm font-medium hover:shadow-md transition-all">Order</button>
+                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                        onClick={() => handleContactSupplier(supplier)}
+                                        className="px-4 py-2 bg-[#F7FDFC] text-[#2EBE76] rounded-lg text-sm font-medium hover:bg-[#E8F9F5] transition-all"
+                                    >
+                                        Contact
+                                    </button>
+                                    <button
+                                        onClick={() => handleOrderFromSupplier(supplier)}
+                                        className="px-4 py-2 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-lg text-sm font-medium hover:shadow-md transition-all"
+                                    >
+                                        Order
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -161,6 +254,26 @@ export default function Suppliers() {
                     )}
                 </div>
             </div>
+
+            <AddSupplierModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onAdd={handleAddSupplier}
+            />
+
+            <ViewSupplierModal
+                isOpen={isViewModalOpen}
+                onClose={() => {
+                    setIsViewModalOpen(false);
+                    setSelectedSupplier(null);
+                }}
+                supplier={selectedSupplier}
+                onUpdate={handleUpdateSupplier}
+                onDelete={handleDeleteSupplier}
+                onContact={handleContactSupplier}
+                onOrder={handleOrderFromSupplier}
+            />
         </div>
     );
 }
+
