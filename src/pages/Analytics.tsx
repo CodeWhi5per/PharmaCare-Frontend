@@ -7,6 +7,8 @@ export default function Analytics() {
     const [topMedicines, setTopMedicines] = useState<any[]>([]);
     const [predictions, setPredictions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [dateRange, setDateRange] = useState('30');
+    const [showDateMenu, setShowDateMenu] = useState(false);
 
     useEffect(() => {
         const load = async () => {
@@ -25,7 +27,51 @@ export default function Analytics() {
             }
         };
         load();
-    }, []);
+    }, [dateRange]);
+
+    const handleExportReport = () => {
+        try {
+            // Create CSV content
+            let csvContent = "PharmaCare Analytics Report\n\n";
+            csvContent += `Date Range: Last ${dateRange} Days\n`;
+            csvContent += `Generated: ${new Date().toLocaleString()}\n\n`;
+
+            // Consumption Trends Section
+            csvContent += "CONSUMPTION TRENDS\n";
+            csvContent += "Medicine,Dispensed,Trend\n";
+            topMedicines.forEach(med => {
+                csvContent += `${med.name},${med.dispensed},${med.trend || 'N/A'}\n`;
+            });
+
+            csvContent += "\n\nDEMAND FORECAST\n";
+            csvContent += "Medicine,Stockout Date,Risk Level,Confidence\n";
+            predictions.forEach(pred => {
+                csvContent += `${pred.medicine},${pred.stockoutDate},${pred.risk},${pred.confidence}%\n`;
+            });
+
+            // Create blob and download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `analytics_report_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show success message
+            alert('Report exported successfully!');
+        } catch (err) {
+            console.error('Export failed:', err);
+            alert('Failed to export report. Please try again.');
+        }
+    };
+
+    const handleDateRangeChange = (range: string) => {
+        setDateRange(range);
+        setShowDateMenu(false);
+    };
 
     const riskStyles: Record<string, string> = {
         low: 'bg-green-50 text-green-600 border-green-200',
@@ -52,11 +98,49 @@ export default function Analytics() {
                     <p className="text-[#6C757D] font-secondary">AI-powered insights and demand forecasting</p>
                 </div>
                 <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl font-medium text-[#1A1A1A] hover:border-[#2EBE76] transition-all">
-                        <Calendar className="w-5 h-5" />Last 30 Days
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg transition-all">
-                        <Download className="w-5 h-5" />Export Report
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowDateMenu(!showDateMenu)}
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl font-medium text-[#1A1A1A] hover:border-[#2EBE76] transition-all"
+                        >
+                            <Calendar className="w-5 h-5" />
+                            Last {dateRange} Days
+                        </button>
+                        {showDateMenu && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-10">
+                                <button
+                                    onClick={() => handleDateRangeChange('7')}
+                                    className="w-full px-4 py-2 text-left hover:bg-[#F7FDFC] transition-colors text-sm font-medium text-[#1A1A1A]"
+                                >
+                                    Last 7 Days
+                                </button>
+                                <button
+                                    onClick={() => handleDateRangeChange('30')}
+                                    className="w-full px-4 py-2 text-left hover:bg-[#F7FDFC] transition-colors text-sm font-medium text-[#1A1A1A]"
+                                >
+                                    Last 30 Days
+                                </button>
+                                <button
+                                    onClick={() => handleDateRangeChange('90')}
+                                    className="w-full px-4 py-2 text-left hover:bg-[#F7FDFC] transition-colors text-sm font-medium text-[#1A1A1A]"
+                                >
+                                    Last 90 Days
+                                </button>
+                                <button
+                                    onClick={() => handleDateRangeChange('365')}
+                                    className="w-full px-4 py-2 text-left hover:bg-[#F7FDFC] transition-colors text-sm font-medium text-[#1A1A1A]"
+                                >
+                                    Last Year
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    <button
+                        onClick={handleExportReport}
+                        className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                    >
+                        <Download className="w-5 h-5" />
+                        Export Report
                     </button>
                 </div>
             </div>
