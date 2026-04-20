@@ -1,20 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
-import { Search, Filter, Download, Plus, Eye } from 'lucide-react';
+import { Search, Filter, Download, Plus, Eye, X } from 'lucide-react';
 import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineModal';
+import ExportReportModal from '../components/ExportReportModal';
 import { inventoryAPI } from '../services/api';
 
 export default function Inventory() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
     const [medicines, setMedicines] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [allCategories, setAllCategories] = useState<string[]>([]);
 
-    const fetchMedicines = async (search = '') => {
+    // Filter states
+    const [statusFilter, setStatusFilter] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('');
+
+    const fetchMedicines = async (search = '', status = '', category = '') => {
         try {
             setLoading(true);
-            const res = await inventoryAPI.getAll(search ? { search } : {});
+            const params: Record<string, string> = {};
+            if (search) params.search = search;
+            if (status) params.status = status;
+            if (category) params.category = category;
+
+            const res = await inventoryAPI.getAll(params);
             setMedicines(res.data);
+
+            // Extract unique categories if we don't have filters applied
+            if (!search && !status && !category) {
+                const categories = Array.from(
+                    new Set(res.data.map((m: any) => m.category).filter(Boolean))
+                ).sort();
+                setAllCategories(categories as string[]);
+            }
         } catch (err) {
             console.error('Failed to fetch medicines', err);
         } finally {
@@ -25,18 +46,26 @@ export default function Inventory() {
     useEffect(() => { fetchMedicines(); }, []);
 
     useEffect(() => {
-        const timer = setTimeout(() => fetchMedicines(searchTerm), 400);
+        const timer = setTimeout(() => fetchMedicines(searchTerm, statusFilter, categoryFilter), 400);
         return () => clearTimeout(timer);
-    }, [searchTerm]);
+    }, [searchTerm, statusFilter, categoryFilter]);
 
     const handleAddMedicine = async (medicineData: MedicineFormData) => {
         try {
             await inventoryAPI.create(medicineData);
-            fetchMedicines(searchTerm);
+            fetchMedicines(searchTerm, statusFilter, categoryFilter);
         } catch (err) {
             console.error('Failed to add medicine', err);
         }
     };
+
+    const clearFilters = () => {
+        setStatusFilter('');
+        setCategoryFilter('');
+        setSearchTerm('');
+    };
+
+    const hasActiveFilters = statusFilter || categoryFilter || searchTerm;
 
     const statusStyles = {
         healthy: { bg: 'bg-green-50', text: 'text-green-600', border: 'border-green-200', label: 'Healthy' },
@@ -80,15 +109,93 @@ export default function Inventory() {
                             </div>
                         )}
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl font-medium text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76] transition-all">
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`flex items-center gap-2 px-6 py-3 border rounded-xl font-medium transition-all ${
+                            showFilters || hasActiveFilters
+                                ? 'bg-[#2EBE76] text-white border-[#2EBE76]'
+                                : 'bg-[#F7FDFC] border-gray-100 text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76]'
+                        }`}
+                    >
                         <Filter className="w-5 h-5" />
                         Filters
+                        {hasActiveFilters && (
+                            <span className="bg-white text-[#2EBE76] px-2 py-0.5 rounded-full text-xs font-bold">
+                                {[statusFilter, categoryFilter, searchTerm].filter(Boolean).length}
+                            </span>
+                        )}
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl font-medium text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76] transition-all">
+                    <button
+                        onClick={() => setIsExportModalOpen(true)}
+                        className="flex items-center gap-2 px-6 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl font-medium text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76] transition-all"
+                    >
                         <Download className="w-5 h-5" />
                         Export
                     </button>
                 </div>
+
+                {/* Filter Panel */}
+                {showFilters && (
+                    <div className="mt-4 p-4 bg-[#F7FDFC] border border-[#2EBE76] rounded-xl space-y-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-semibold text-[#1A1A1A]">Filter Options</h3>
+                            {hasActiveFilters && (
+                                <button
+                                    onClick={clearFilters}
+                                    className="flex items-center gap-1 text-sm text-[#6C757D] hover:text-[#2EBE76] transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                    Clear All
+                                </button>
+                            )}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
+                                    Status
+                                </label>
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                >
+                                    <option value="">All Statuses</option>
+                                    <option value="healthy">Healthy</option>
+                                    <option value="low">Low Stock</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="expiring">Expiring Soon</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-[#1A1A1A] mb-2">
+                                    Category
+                                </label>
+                                <select
+                                    value={categoryFilter}
+                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                >
+                                    <option value="">All Categories</option>
+                                    {allCategories.map(category => (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        {hasActiveFilters && (
+                            <div className="pt-3 border-t border-gray-200">
+                                <p className="text-sm text-[#6C757D]">
+                                    Showing <span className="font-semibold text-[#2EBE76]">{medicines.length}</span> result{medicines.length !== 1 ? 's' : ''}
+                                    {statusFilter && <span> with status <span className="font-semibold">{statusFilter}</span></span>}
+                                    {categoryFilter && <span> in category <span className="font-semibold">{categoryFilter}</span></span>}
+                                    {searchTerm && <span> matching <span className="font-semibold">"{searchTerm}"</span></span>}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <div className="overflow-x-auto">
                     <table className="w-full">
@@ -176,6 +283,15 @@ export default function Inventory() {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddMedicine}
+            />
+
+            <ExportReportModal
+                isOpen={isExportModalOpen}
+                onClose={() => setIsExportModalOpen(false)}
+                onExport={() => {
+                    // Export handled inside the modal
+                    setIsExportModalOpen(false);
+                }}
             />
         </div>
     );
