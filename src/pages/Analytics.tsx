@@ -6,24 +6,18 @@ import { analyticsAPI } from '../services/api';
 export default function Analytics() {
     const [topMedicines, setTopMedicines] = useState<any[]>([]);
     const [predictions, setPredictions] = useState<any[]>([]);
-    const [heatmap, setHeatmap] = useState<any[]>([]);
-    const [revenue, setRevenue] = useState<any>({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const load = async () => {
             try {
                 setLoading(true);
-                const [topRes, predRes, heatRes, revRes] = await Promise.all([
+                const [topRes, predRes] = await Promise.all([
                     analyticsAPI.getTopMedicines(),
                     analyticsAPI.getDemandForecast(),
-                    analyticsAPI.getUsageHeatmap(),
-                    analyticsAPI.getRevenue(),
                 ]);
                 setTopMedicines(topRes.data);
                 setPredictions(predRes.data);
-                setHeatmap(heatRes.data);
-                setRevenue(revRes.data);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -49,14 +43,6 @@ export default function Analytics() {
 
     const maxDispensed = topMedicines[0]?.dispensed || 1;
 
-    const heatColors = ['bg-gray-100', 'bg-[#21D6C3]/30', 'bg-[#2EBE76]/60', 'bg-[#0BAF8C]'];
-
-    const getHeatColor = (count: number) => {
-        if (count === 0) return heatColors[0];
-        if (count <= 2) return heatColors[1];
-        if (count <= 5) return heatColors[2];
-        return heatColors[3];
-    };
 
     return (
         <div className="p-8 space-y-6">
@@ -133,43 +119,6 @@ export default function Analytics() {
                                 ))}
                                 {predictions.length === 0 && <p className="text-sm text-[#6C757D] text-center py-4">No forecast data yet</p>}
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-2xl p-6 border border-gray-100">
-                        <h2 className="text-lg font-semibold text-[#1A1A1A] mb-6">Usage Heatmap (Last 28 days)</h2>
-                        <div className="grid grid-cols-7 gap-2">
-                            {heatmap.map((day, i) => (
-                                <div key={i} className={`aspect-square rounded-lg ${getHeatColor(day.count)} hover:scale-110 transition-transform cursor-pointer`} title={`${day.date}: ${day.count} activities`}></div>
-                            ))}
-                            {heatmap.length === 0 && Array.from({ length: 28 }).map((_, i) => (
-                                <div key={i} className="aspect-square rounded-lg bg-gray-100"></div>
-                            ))}
-                        </div>
-                        <div className="flex items-center justify-between mt-4 text-xs text-[#6C757D]">
-                            <span>Less Activity</span>
-                            <div className="flex gap-1">
-                                {heatColors.map((c, i) => <div key={i} className={`w-4 h-4 rounded ${c}`}></div>)}
-                            </div>
-                            <span>More Activity</span>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-gradient-to-br from-[#2EBE76] to-[#0BAF8C] rounded-2xl p-6 text-white">
-                            <p className="text-white/80 text-sm mb-2">Total Inventory Value</p>
-                            <p className="text-4xl font-bold mb-2">${revenue.totalRevenue?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || '0'}</p>
-                            <p className="text-sm text-white/90">Based on current stock</p>
-                        </div>
-                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-                            <p className="text-white/80 text-sm mb-2">Avg. Daily Dispensing</p>
-                            <p className="text-4xl font-bold mb-2">{revenue.avgDailyDispensing || 0}</p>
-                            <p className="text-sm text-white/90">Units per day</p>
-                        </div>
-                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
-                            <p className="text-white/80 text-sm mb-2">Inventory Turnover</p>
-                            <p className="text-4xl font-bold mb-2">{revenue.inventoryTurnover || '0'}x</p>
-                            <p className="text-sm text-white/90">Optimal range</p>
                         </div>
                     </div>
                 </>
