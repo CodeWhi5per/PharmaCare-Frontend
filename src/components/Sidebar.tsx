@@ -7,14 +7,16 @@ import {
     Settings,
     Pill
 } from 'lucide-react';
+import { canAccessPage, UserRole } from '../utils/permissions';
 
 interface SidebarProps {
     currentPage: string;
     onNavigate: (page: string) => void;
+    userRole?: UserRole;
 }
 
-export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
-    const menuItems = [
+export default function Sidebar({ currentPage, onNavigate, userRole }: SidebarProps) {
+    const allMenuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'inventory', label: 'Inventory', icon: Package },
         { id: 'alerts', label: 'Alerts', icon: Bell },
@@ -22,6 +24,9 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
         { id: 'analytics', label: 'Analytics', icon: TrendingUp },
         { id: 'settings', label: 'Settings', icon: Settings },
     ];
+
+    // Filter menu items based on user role permissions
+    const menuItems = allMenuItems.filter(item => canAccessPage(userRole, item.id));
 
     return (
         <aside className="w-64 bg-white border-r border-gray-100 flex flex-col">

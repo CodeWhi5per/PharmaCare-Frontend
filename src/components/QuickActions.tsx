@@ -1,24 +1,57 @@
 import { Plus, RefreshCw, FileText, Users } from 'lucide-react';
+import { UserRole, canPerformAction } from '../utils/permissions';
 
 interface QuickActionsProps {
     onAddMedicine?: () => void;
     onViewSuppliers?: () => void;
     onGenerateReorder?: () => void;
     onExportReport?: () => void;
+    userRole?: UserRole;
 }
 
 export default function QuickActions({
     onAddMedicine,
     onViewSuppliers,
     onGenerateReorder,
-    onExportReport
+    onExportReport,
+    userRole
 }: QuickActionsProps) {
-    const actions = [
-        { icon: Plus, label: 'Add Medicine', color: 'from-[#2EBE76] to-[#0BAF8C]', onClick: onAddMedicine },
-        { icon: Users, label: 'View Suppliers', color: 'from-blue-500 to-blue-600', onClick: onViewSuppliers },
-        { icon: RefreshCw, label: 'Generate Reorder', color: 'from-orange-500 to-orange-600', onClick: onGenerateReorder },
-        { icon: FileText, label: 'Export Report', color: 'from-purple-500 to-purple-600', onClick: onExportReport },
+    const allActions = [
+        {
+            icon: Plus,
+            label: 'Add Medicine',
+            color: 'from-[#2EBE76] to-[#0BAF8C]',
+            onClick: onAddMedicine,
+            permission: 'addMedicine'
+        },
+        {
+            icon: Users,
+            label: 'View Suppliers',
+            color: 'from-blue-500 to-blue-600',
+            onClick: onViewSuppliers,
+            permission: null // Always visible
+        },
+        {
+            icon: RefreshCw,
+            label: 'Generate Reorder',
+            color: 'from-orange-500 to-orange-600',
+            onClick: onGenerateReorder,
+            permission: 'generateReorder'
+        },
+        {
+            icon: FileText,
+            label: 'Export Report',
+            color: 'from-purple-500 to-purple-600',
+            onClick: onExportReport,
+            permission: 'exportReports'
+        },
     ];
+
+    // Filter actions based on permissions
+    const actions = allActions.filter(action =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        !action.permission || canPerformAction(userRole, action.permission as any)
+    );
 
     return (
         <div className="bg-white rounded-2xl p-6 border border-gray-100">

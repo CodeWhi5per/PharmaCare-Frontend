@@ -42,7 +42,11 @@ function App() {
 
     return (
         <div className="flex h-screen bg-[#F7FDFC]">
-            <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
+            <Sidebar
+                currentPage={currentPage}
+                onNavigate={setCurrentPage}
+                userRole={user?.role as 'admin' | 'manager' | 'staff'}
+            />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <Header
                     onLogout={() => { localStorage.removeItem('pharmacare_token'); localStorage.removeItem('pharmacare_user'); setIsLoggedIn(false); }}

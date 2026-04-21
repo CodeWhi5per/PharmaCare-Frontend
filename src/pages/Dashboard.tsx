@@ -10,6 +10,7 @@ import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineMod
 import GenerateReorderModal, { ReorderData } from '../components/GenerateReorderModal';
 import ExportReportModal, { ExportData } from '../components/ExportReportModal';
 import { dashboardAPI, inventoryAPI } from '../services/api';
+import { UserRole } from '../utils/permissions';
 
 interface DashboardProps {
     onNavigate?: (page: string) => void;
@@ -20,6 +21,10 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [stats, setStats] = useState({ totalMedicines: 0, lowStockItems: 0, expiringSoon: 0, autoOrders: 0 });
+
+    // Get user role from localStorage
+    const storedUser = localStorage.getItem('pharmacare_user');
+    const userRole = storedUser ? (JSON.parse(storedUser).role as UserRole) : undefined;
 
     useEffect(() => {
         dashboardAPI.getStats().then((res) => setStats(res.data)).catch(console.error);
@@ -76,6 +81,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                         onViewSuppliers={handleViewSuppliers}
                         onGenerateReorder={() => setIsReorderModalOpen(true)}
                         onExportReport={() => setIsExportModalOpen(true)}
+                        userRole={userRole}
                     />
                 </div>
             </div>

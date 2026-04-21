@@ -6,6 +6,8 @@ import EditMedicineModal from '../components/EditMedicineModal';
 import ViewMedicineModal from '../components/ViewMedicineModal';
 import ExportReportModal from '../components/ExportReportModal';
 import { inventoryAPI } from '../services/api';
+import { UserRole, canPerformAction } from '../utils/permissions';
+import usePermissions from '../hooks/usePermissions';
 
 export default function Inventory() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +20,11 @@ export default function Inventory() {
     const [selectedMedicine, setSelectedMedicine] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [allCategories, setAllCategories] = useState<string[]>([]);
+
+    // Get user role from localStorage
+    const storedUser = localStorage.getItem('pharmacare_user');
+    const userRole = storedUser ? (JSON.parse(storedUser).role as UserRole) : undefined;
+    const permissions = usePermissions(userRole);
 
     // Filter states
     const [statusFilter, setStatusFilter] = useState('');
@@ -116,13 +123,15 @@ export default function Inventory() {
                     <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Inventory Management</h1>
                     <p className="text-[#6C757D] font-secondary">Monitor and manage your pharmacy stock levels</p>
                 </div>
-                <button
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all"
-                >
-                    <Plus className="w-5 h-5" />
-                    Add Medicine
-                </button>
+                {permissions.canDo('addMedicine') && (
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2EBE76] to-[#0BAF8C] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add Medicine
+                    </button>
+                )}
             </div>
 
             <div className="bg-white rounded-2xl p-6 border border-gray-100">
@@ -160,13 +169,15 @@ export default function Inventory() {
                             </span>
                         )}
                     </button>
-                    <button
-                        onClick={() => setIsExportModalOpen(true)}
-                        className="flex items-center gap-2 px-6 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl font-medium text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76] transition-all"
-                    >
-                        <Download className="w-5 h-5" />
-                        Export
-                    </button>
+                    {permissions.canDo('exportInventory') && (
+                        <button
+                            onClick={() => setIsExportModalOpen(true)}
+                            className="flex items-center gap-2 px-6 py-3 bg-[#F7FDFC] border border-gray-100 rounded-xl font-medium text-[#1A1A1A] hover:bg-[#E8F9F5] hover:border-[#2EBE76] transition-all"
+                        >
+                            <Download className="w-5 h-5" />
+                            Export
+                        </button>
+                    )}
                 </div>
 
                 {/* Filter Panel */}
@@ -299,20 +310,24 @@ export default function Inventory() {
                                                     >
                                                         <Eye className="w-4 h-4 text-[#6C757D] group-hover:text-[#2EBE76]" />
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleEditMedicine(medicine)}
-                                                        className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
-                                                        title="Edit Medicine"
-                                                    >
-                                                        <Edit2 className="w-4 h-4 text-[#6C757D] group-hover:text-blue-600" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteMedicine(medicine._id, medicine.name)}
-                                                        className="p-2 hover:bg-red-50 rounded-lg transition-colors group"
-                                                        title="Delete Medicine"
-                                                    >
-                                                        <Trash2 className="w-4 h-4 text-[#6C757D] group-hover:text-red-600" />
-                                                    </button>
+                                                    {permissions.canDo('editMedicine') && (
+                                                        <button
+                                                            onClick={() => handleEditMedicine(medicine)}
+                                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
+                                                            title="Edit Medicine"
+                                                        >
+                                                            <Edit2 className="w-4 h-4 text-[#6C757D] group-hover:text-blue-600" />
+                                                        </button>
+                                                    )}
+                                                    {permissions.canDo('deleteMedicine') && (
+                                                        <button
+                                                            onClick={() => handleDeleteMedicine(medicine._id, medicine.name)}
+                                                            className="p-2 hover:bg-red-50 rounded-lg transition-colors group"
+                                                            title="Delete Medicine"
+                                                        >
+                                                            <Trash2 className="w-4 h-4 text-[#6C757D] group-hover:text-red-600" />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
