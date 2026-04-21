@@ -4,6 +4,7 @@ import { Search, Mail, Phone, MapPin, TrendingUp, Package, Plus, Building2 } fro
 import { suppliersAPI } from '../services/api';
 import AddSupplierModal, { SupplierFormData } from '../components/AddSupplierModal';
 import ViewSupplierModal from '../components/ViewSupplierModal';
+import PlaceOrderModal from '../components/PlaceOrderModal';
 
 export default function Suppliers() {
     const [search, setSearch] = useState('');
@@ -13,6 +14,7 @@ export default function Suppliers() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState<any>(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isPlaceOrderModalOpen, setIsPlaceOrderModalOpen] = useState(false);
 
     const fetchSuppliers = async (q = '') => {
         try {
@@ -86,8 +88,13 @@ export default function Suppliers() {
     };
 
     const handleOrderFromSupplier = (supplier: any) => {
-        // Placeholder for order functionality
-        alert(`Order functionality for ${supplier.name} will be implemented soon!`);
+        setSelectedSupplier(supplier);
+        setIsPlaceOrderModalOpen(true);
+    };
+
+    const handleOrderSuccess = () => {
+        fetchSuppliers(search);
+        fetchComms();
     };
 
     const timeAgo = (date: string) => {
@@ -272,6 +279,16 @@ export default function Suppliers() {
                 onDelete={handleDeleteSupplier}
                 onContact={handleContactSupplier}
                 onOrder={handleOrderFromSupplier}
+            />
+
+            <PlaceOrderModal
+                isOpen={isPlaceOrderModalOpen}
+                onClose={() => {
+                    setIsPlaceOrderModalOpen(false);
+                    setSelectedSupplier(null);
+                }}
+                supplier={selectedSupplier}
+                onSuccess={handleOrderSuccess}
             />
         </div>
     );

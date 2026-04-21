@@ -118,3 +118,19 @@ export const settingsAPI = {
     updateThresholds: (data: any) =>
         fetch(`${API_BASE}/settings/thresholds`, { method: 'PUT', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
 };
+
+// ORDERS
+export const ordersAPI = {
+    getAll: (params: Record<string, string> = {}) => {
+        const qs = new URLSearchParams(params).toString();
+        return fetch(`${API_BASE}/orders${qs ? '?' + qs : ''}`, { headers: headers() }).then(handleResponse);
+    },
+    getOne: (id: string) => fetch(`${API_BASE}/orders/${id}`, { headers: headers() }).then(handleResponse),
+    create: (data: any) =>
+        fetch(`${API_BASE}/orders`, { method: 'POST', headers: headers(), body: JSON.stringify(data) }).then(handleResponse),
+    updateStatus: (id: string, status: string, actualDelivery?: string) =>
+        fetch(`${API_BASE}/orders/${id}/status`, { method: 'PUT', headers: headers(), body: JSON.stringify({ status, actualDelivery }) }).then(handleResponse),
+    cancel: (id: string) =>
+        fetch(`${API_BASE}/orders/${id}`, { method: 'DELETE', headers: headers() }).then(handleResponse),
+};
+

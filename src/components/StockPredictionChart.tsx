@@ -26,7 +26,7 @@ export default function StockPredictionChart() {
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-lg font-semibold text-[#1A1A1A] mb-1">Stock Predictions</h2>
-                    <p className="text-sm text-[#6C757D]">AI-powered depletion forecasts</p>
+                    <p className="text-sm text-[#6C757D]">depletion forecasts</p>
                 </div>
                 <Activity className="w-5 h-5 text-[#2EBE76]" />
             </div>
