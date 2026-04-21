@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Plus, Calendar } from 'lucide-react';
+import { suppliersAPI } from '../services/api';
 
 interface AddMedicineModalProps {
     isOpen: boolean;
@@ -32,6 +33,9 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
         unitPrice: 0,
     });
 
+    const [suppliers, setSuppliers] = useState<Array<{ _id: string; name: string }>>([]);
+    const [loadingSuppliers, setLoadingSuppliers] = useState(false);
+
     const categories = [
         'Pain Relief',
         'Anti-inflammatory',
@@ -45,13 +49,25 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
         'Other',
     ];
 
-    const suppliers = [
-        'MedSupply Co.',
-        'PharmaDirect',
-        'HealthPlus',
-        'MediCare Distributors',
-        'Global Pharma',
-    ];
+    // Fetch suppliers from backend
+    useEffect(() => {
+        const fetchSuppliers = async () => {
+            try {
+                setLoadingSuppliers(true);
+                const res = await suppliersAPI.getAll();
+                setSuppliers(res.data || []);
+            } catch (err) {
+                console.error('Failed to fetch suppliers', err);
+                setSuppliers([]);
+            } finally {
+                setLoadingSuppliers(false);
+            }
+        };
+
+        if (isOpen) {
+            fetchSuppliers();
+        }
+    }, [isOpen]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -143,11 +159,14 @@ export default function AddMedicineModal({ isOpen, onClose, onAdd }: AddMedicine
                                 value={formData.supplier}
                                 onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
                                 className="w-full px-4 py-3 bg-[#F7FDFC] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                disabled={loadingSuppliers}
                             >
-                                <option value="">Select Supplier</option>
+                                <option value="">
+                                    {loadingSuppliers ? 'Loading suppliers...' : suppliers.length === 0 ? 'No suppliers available' : 'Select Supplier'}
+                                </option>
                                 {suppliers.map((sup) => (
-                                    <option key={sup} value={sup}>
-                                        {sup}
+                                    <option key={sup._id} value={sup.name}>
+                                        {sup.name}
                                     </option>
                                 ))}
                             </select>

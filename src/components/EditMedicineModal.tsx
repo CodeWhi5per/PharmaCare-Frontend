@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Edit, Calendar } from 'lucide-react';
+import { suppliersAPI } from '../services/api';
 
 interface EditMedicineModalProps {
     isOpen: boolean;
@@ -33,6 +34,9 @@ export default function EditMedicineModal({ isOpen, onClose, onUpdate, medicine 
         unitPrice: 0,
     });
 
+    const [suppliers, setSuppliers] = useState<Array<{ _id: string; name: string }>>([]);
+    const [loadingSuppliers, setLoadingSuppliers] = useState(false);
+
     useEffect(() => {
         if (medicine) {
             setFormData({
@@ -49,6 +53,26 @@ export default function EditMedicineModal({ isOpen, onClose, onUpdate, medicine 
         }
     }, [medicine]);
 
+    // Fetch suppliers from backend
+    useEffect(() => {
+        const fetchSuppliers = async () => {
+            try {
+                setLoadingSuppliers(true);
+                const res = await suppliersAPI.getAll();
+                setSuppliers(res.data || []);
+            } catch (err) {
+                console.error('Failed to fetch suppliers', err);
+                setSuppliers([]);
+            } finally {
+                setLoadingSuppliers(false);
+            }
+        };
+
+        if (isOpen) {
+            fetchSuppliers();
+        }
+    }, [isOpen]);
+
     const categories = [
         'Pain Relief',
         'Anti-inflammatory',
@@ -62,13 +86,6 @@ export default function EditMedicineModal({ isOpen, onClose, onUpdate, medicine 
         'Other',
     ];
 
-    const suppliers = [
-        'MedSupply Co.',
-        'PharmaDirect',
-        'HealthPlus',
-        'MediCare Distributors',
-        'Global Pharma',
-    ];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -151,11 +168,14 @@ export default function EditMedicineModal({ isOpen, onClose, onUpdate, medicine 
                                     value={formData.supplier}
                                     onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
                                     className="w-full px-4 py-3 bg-[#F7FDFC] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2EBE76] focus:border-transparent transition-all"
+                                    disabled={loadingSuppliers}
                                 >
-                                    <option value="">Select Supplier</option>
+                                    <option value="">
+                                        {loadingSuppliers ? 'Loading suppliers...' : suppliers.length === 0 ? 'No suppliers available' : 'Select Supplier'}
+                                    </option>
                                     {suppliers.map((sup) => (
-                                        <option key={sup} value={sup}>
-                                            {sup}
+                                        <option key={sup._id} value={sup.name}>
+                                            {sup.name}
                                         </option>
                                     ))}
                                 </select>
