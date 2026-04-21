@@ -1,16 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
-import { Search, Filter, Download, Plus, Eye, X } from 'lucide-react';
+import { Search, Filter, Download, Plus, Eye, X, Edit2, Trash2 } from 'lucide-react';
 import AddMedicineModal, { MedicineFormData } from '../components/AddMedicineModal';
+import EditMedicineModal from '../components/EditMedicineModal';
+import ViewMedicineModal from '../components/ViewMedicineModal';
 import ExportReportModal from '../components/ExportReportModal';
 import { inventoryAPI } from '../services/api';
 
 export default function Inventory() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [isExportModalOpen, setIsExportModalOpen] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [medicines, setMedicines] = useState<any[]>([]);
+    const [selectedMedicine, setSelectedMedicine] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [allCategories, setAllCategories] = useState<string[]>([]);
 
@@ -56,6 +61,36 @@ export default function Inventory() {
             fetchMedicines(searchTerm, statusFilter, categoryFilter);
         } catch (err) {
             console.error('Failed to add medicine', err);
+        }
+    };
+
+    const handleUpdateMedicine = async (id: string, medicineData: MedicineFormData) => {
+        try {
+            await inventoryAPI.update(id, medicineData);
+            fetchMedicines(searchTerm, statusFilter, categoryFilter);
+        } catch (err) {
+            console.error('Failed to update medicine', err);
+        }
+    };
+
+    const handleViewMedicine = (medicine: any) => {
+        setSelectedMedicine(medicine);
+        setIsViewModalOpen(true);
+    };
+
+    const handleEditMedicine = (medicine: any) => {
+        setSelectedMedicine(medicine);
+        setIsEditModalOpen(true);
+    };
+
+    const handleDeleteMedicine = async (id: string, name: string) => {
+        if (window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+            try {
+                await inventoryAPI.delete(id);
+                fetchMedicines(searchTerm, statusFilter, categoryFilter);
+            } catch (err) {
+                console.error('Failed to delete medicine', err);
+            }
         }
     };
 
@@ -256,9 +291,29 @@ export default function Inventory() {
                                                 </span>
                                             </td>
                                             <td className="py-4 px-4">
-                                                <button className="p-2 hover:bg-[#E8F9F5] rounded-lg transition-colors">
-                                                    <Eye className="w-4 h-4 text-[#6C757D]" />
-                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => handleViewMedicine(medicine)}
+                                                        className="p-2 hover:bg-[#E8F9F5] rounded-lg transition-colors group"
+                                                        title="View Details"
+                                                    >
+                                                        <Eye className="w-4 h-4 text-[#6C757D] group-hover:text-[#2EBE76]" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleEditMedicine(medicine)}
+                                                        className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
+                                                        title="Edit Medicine"
+                                                    >
+                                                        <Edit2 className="w-4 h-4 text-[#6C757D] group-hover:text-blue-600" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteMedicine(medicine._id, medicine.name)}
+                                                        className="p-2 hover:bg-red-50 rounded-lg transition-colors group"
+                                                        title="Delete Medicine"
+                                                    >
+                                                        <Trash2 className="w-4 h-4 text-[#6C757D] group-hover:text-red-600" />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     );
@@ -283,6 +338,25 @@ export default function Inventory() {
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddMedicine}
+            />
+
+            <EditMedicineModal
+                isOpen={isEditModalOpen}
+                onClose={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedMedicine(null);
+                }}
+                onUpdate={handleUpdateMedicine}
+                medicine={selectedMedicine}
+            />
+
+            <ViewMedicineModal
+                isOpen={isViewModalOpen}
+                onClose={() => {
+                    setIsViewModalOpen(false);
+                    setSelectedMedicine(null);
+                }}
+                medicine={selectedMedicine}
             />
 
             <ExportReportModal
