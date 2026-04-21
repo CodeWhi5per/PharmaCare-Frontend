@@ -6,7 +6,7 @@ import EditMedicineModal from '../components/EditMedicineModal';
 import ViewMedicineModal from '../components/ViewMedicineModal';
 import ExportReportModal from '../components/ExportReportModal';
 import { inventoryAPI } from '../services/api';
-import { UserRole, canPerformAction } from '../utils/permissions';
+import { UserRole } from '../utils/permissions';
 import usePermissions from '../hooks/usePermissions';
 
 export default function Inventory() {
